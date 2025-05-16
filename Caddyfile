@@ -1,0 +1,54 @@
+{
+    admin off
+}
+
+:80 {
+    root * /www
+
+    # First check if file exists - if so, proxy to WordPress
+    @exists {
+        file {
+            try_files {path} {path}/
+        }
+    }
+    handle @exists {
+        reverse_proxy ${INTERNAL_BACKEND_PROTOCOL}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # If file doesn't exist and matches the pattern, proxy to other backend
+    @external_backend {
+        expression `{path} matches "(?i)${EXTERNAL_BACKEND_PATTERN}"`
+        not file {
+            try_files {path} {path}/
+        }
+    }
+    handle @external_backend {
+        reverse_proxy ${EXTERNAL_BACKEND_PROTOCOL}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT}
+    }
+
+    # Default: if no match above, proxy to WordPress
+    handle {
+        reverse_proxy ${INTERNAL_BACKEND_PROTOCOL}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Common security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    # Enable compression
+    encode gzip
+}
