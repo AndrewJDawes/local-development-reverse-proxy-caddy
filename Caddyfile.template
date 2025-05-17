@@ -15,31 +15,23 @@
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            {$INTERNAL_BACKEND_SCHEME} == "https" {
-                transport http {
-                    tls
-                    tls_insecure_skip_verify  # Only if needed for self-signed certs
-                }
+            transport http {
+                tls_insecure_skip_verify  # Only if needed for self-signed certs
             }
         }
     }
 
     # If file doesn't exist and matches the pattern, proxy to other backend
     @external_backend {
-        expression `{path} matches "(?i)${EXTERNAL_BACKEND_PATTERN}"`
+        path_regexp external ${EXTERNAL_BACKEND_PATTERN}
         not file {
             try_files {path} {path}/
         }
     }
     handle @external_backend {
         reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
-            {$EXTERNAL_BACKEND_SCHEME} == "https" {
-                transport http {
-                    tls
-                    tls_insecure_skip_verify  # Only if needed for self-signed certs
-                }
+            transport http {
+                tls_insecure_skip_verify  # Only if needed for self-signed certs
             }
         }
     }
@@ -49,13 +41,8 @@
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-            {$INTERNAL_BACKEND_SCHEME} == "https" {
-                transport http {
-                    tls
-                    tls_insecure_skip_verify  # Only if needed for self-signed certs
-                }
+            transport http {
+                tls_insecure_skip_verify  # Only if needed for self-signed certs
             }
         }
     }
