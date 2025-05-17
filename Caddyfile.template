@@ -5,6 +5,12 @@
 :80 {
     root * /www
 
+    # Configure transport for HTTPS external backend
+    @external_transport transport http {
+        tls  # Enable TLS for upstream connections
+        tls_insecure_skip_verify  # Only if needed for self-signed certs
+    }
+
     # First check if file exists - if so, proxy to WordPress
     @exists {
         file {
@@ -12,7 +18,7 @@
         }
     }
     handle @exists {
-        reverse_proxy ${INTERNAL_BACKEND_PROTOCOL}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
+        reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
@@ -28,12 +34,12 @@
         }
     }
     handle @external_backend {
-        reverse_proxy ${EXTERNAL_BACKEND_PROTOCOL}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT}
+        reverse_proxy @external_transport ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT}
     }
 
     # Default: if no match above, proxy to WordPress
     handle {
-        reverse_proxy ${INTERNAL_BACKEND_PROTOCOL}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
+        reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
