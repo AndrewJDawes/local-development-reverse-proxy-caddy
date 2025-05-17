@@ -1,8 +1,11 @@
 # Use the official Caddy image as base
 FROM caddy:2.7-alpine
 
-# Create directory for static files
-RUN mkdir -p /www
+# Create directory for static files and transport configs
+RUN mkdir -p /www /etc/caddy/transport
+
+# Copy transport configurations
+COPY http_transport https_transport /etc/caddy/transport/
 
 # Install envsubst
 RUN apk add --no-cache gettext
@@ -27,7 +30,7 @@ ENV INTERNAL_BACKEND_PORT=80
 ENV EXTERNAL_BACKEND_SCHEME=https
 ENV EXTERNAL_BACKEND_HOSTNAME=api.example.com
 ENV EXTERNAL_BACKEND_PORT=443
-ENV EXTERNAL_BACKEND_PATTERN="^/api/.*"
+ENV EXTERNAL_BACKEND_PATTERN="^/github/.*"
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

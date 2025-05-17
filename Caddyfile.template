@@ -15,9 +15,7 @@
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            transport http {
-                tls_insecure_skip_verify  # Only if needed for self-signed certs
-            }
+            import transport/${INTERNAL_BACKEND_SCHEME}_transport
         }
     }
 
@@ -30,9 +28,7 @@
     }
     handle @external_backend {
         reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
-            transport http {
-                tls_insecure_skip_verify  # Only if needed for self-signed certs
-            }
+            import transport/${EXTERNAL_BACKEND_SCHEME}_transport
         }
     }
 
@@ -41,9 +37,7 @@
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
-            transport http {
-                tls_insecure_skip_verify  # Only if needed for self-signed certs
-            }
+            import transport/${INTERNAL_BACKEND_SCHEME}_transport
         }
     }
 
