@@ -1,7 +1,7 @@
 import debug/${DEBUG_LEVEL}
 
 :80 {
-    root * /www
+    root * ${WEB_ROOT}
 
     # First check if file exists - if so, proxy to WordPress
     @exists {

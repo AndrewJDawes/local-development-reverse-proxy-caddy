@@ -5,6 +5,9 @@ FROM caddy:2.7-alpine
 EXPOSE 80
 
 # Set environment variables with default values
+# Web root directory
+ENV WEB_ROOT=/www
+
 # Internal backend (e.g. WordPress) defaults
 ENV INTERNAL_BACKEND_SCHEME=http
 ENV INTERNAL_BACKEND_HOSTNAME=wordpress
