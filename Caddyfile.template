@@ -1,6 +1,4 @@
-{
-    admin off
-}
+import debug/${DEBUG_LEVEL}_debug
 
 :80 {
     root * /www

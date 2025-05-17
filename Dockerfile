@@ -3,10 +3,11 @@ FROM caddy:2.7-alpine
 
 # Create directory for static files and transport configs
 RUN mkdir -p /www /etc/caddy/transport
+RUN mkdir -p /www /etc/caddy/debug
 
 # Copy transport configurations
 COPY http_transport https_transport /etc/caddy/transport/
-
+COPY verbose_debug none_debug /etc/caddy/debug/
 # Install envsubst
 RUN apk add --no-cache gettext
 
@@ -33,6 +34,8 @@ ENV EXTERNAL_BACKEND_HOSTNAME=api.example.com
 ENV EXTERNAL_BACKEND_PORT=443
 ENV EXTERNAL_HEADER_UP_HOST=api.example.com
 ENV EXTERNAL_BACKEND_PATTERN="^/github/.*"
+
+ENV DEBUG_LEVEL=none
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

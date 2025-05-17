@@ -1,0 +1,9 @@
+{
+    debug {
+        http
+        handlers
+        resolvers
+        tls
+    }
+    admin off
+}
