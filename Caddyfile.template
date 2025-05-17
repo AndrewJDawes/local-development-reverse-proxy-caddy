@@ -17,6 +17,12 @@
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
+            {$INTERNAL_BACKEND_SCHEME} == "https" {
+                transport http {
+                    tls
+                    tls_insecure_skip_verify  # Only if needed for self-signed certs
+                }
+            }
         }
     }
 
@@ -29,9 +35,11 @@
     }
     handle @external_backend {
         reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
-            transport http {
-                tls
-                tls_insecure_skip_verify  # Only if needed for self-signed certs
+            {$EXTERNAL_BACKEND_SCHEME} == "https" {
+                transport http {
+                    tls
+                    tls_insecure_skip_verify  # Only if needed for self-signed certs
+                }
             }
         }
     }
@@ -43,6 +51,12 @@
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
+            {$INTERNAL_BACKEND_SCHEME} == "https" {
+                transport http {
+                    tls
+                    tls_insecure_skip_verify  # Only if needed for self-signed certs
+                }
+            }
         }
     }
 
