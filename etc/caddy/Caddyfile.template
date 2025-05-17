@@ -1,4 +1,4 @@
-import debug/${DEBUG_LEVEL}_debug
+import debug/${DEBUG_LEVEL}
 
 :80 {
     root * /www
@@ -13,7 +13,7 @@ import debug/${DEBUG_LEVEL}_debug
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host "${INTERNAL_HEADER_UP_HOST}"
             header_up X-Real-IP {remote_host}
-            import transport/${INTERNAL_BACKEND_SCHEME}_transport
+            import transport/${INTERNAL_BACKEND_SCHEME}
         }
     }
 
@@ -27,7 +27,7 @@ import debug/${DEBUG_LEVEL}_debug
     handle @external_backend {
         reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
             header_up Host "${EXTERNAL_HEADER_UP_HOST}"
-            import transport/${EXTERNAL_BACKEND_SCHEME}_transport
+            import transport/${EXTERNAL_BACKEND_SCHEME}
         }
     }
 
@@ -36,7 +36,7 @@ import debug/${DEBUG_LEVEL}_debug
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
             header_up Host "${INTERNAL_HEADER_UP_HOST}"
             header_up X-Real-IP {remote_host}
-            import transport/${INTERNAL_BACKEND_SCHEME}_transport
+            import transport/${INTERNAL_BACKEND_SCHEME}
         }
     }
 

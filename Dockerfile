@@ -1,23 +1,6 @@
 # Use the official Caddy image as base
 FROM caddy:2.7-alpine
 
-# Create directory for static files and transport configs
-RUN mkdir -p /www /etc/caddy/transport
-RUN mkdir -p /www /etc/caddy/debug
-
-# Copy transport configurations
-COPY http_transport https_transport /etc/caddy/transport/
-COPY verbose_debug none_debug /etc/caddy/debug/
-# Install envsubst
-RUN apk add --no-cache gettext
-
-# Copy the Caddyfile template and entrypoint script
-COPY Caddyfile.template /etc/caddy/Caddyfile.template
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-
-# Make the entrypoint script executable
-RUN chmod +x /docker-entrypoint.sh
-
 # Expose port 80
 EXPOSE 80
 
@@ -34,6 +17,17 @@ ENV EXTERNAL_BACKEND_HOSTNAME=api.example.com
 ENV EXTERNAL_BACKEND_PORT=443
 ENV EXTERNAL_HEADER_UP_HOST=api.example.com
 ENV EXTERNAL_BACKEND_PATTERN="^/github/.*"
+
+# Install envsubst
+RUN apk add --no-cache gettext
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /docker-entrypoint.sh
+
+# Copy configurations
+COPY ./etc/caddy /etc/caddy
 
 ENV DEBUG_LEVEL=none
 
