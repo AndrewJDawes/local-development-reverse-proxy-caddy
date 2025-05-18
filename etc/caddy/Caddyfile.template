@@ -5,9 +5,7 @@ import debug/${DEBUG_LEVEL}.conf
 
     # First check if file exists - if so, proxy to WordPress
     @exists {
-        file {
-            try_files {path} {path}/
-        }
+        file
     }
     handle @exists {
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
