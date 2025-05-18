@@ -22,7 +22,7 @@ ENV EXTERNAL_HEADER_UP_HOST=api.example.com
 ENV EXTERNAL_BACKEND_PATTERN="^/github/.*"
 
 # Install envsubst
-RUN apk add --no-cache gettext
+RUN apk add --no-cache gettext bash
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
