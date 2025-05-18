@@ -10,26 +10,18 @@ export EXTERNAL_AUTH_TEMPLATE="none.conf"
 if [ -n "$INTERNAL_AUTH_USERNAME" ] && [ -n "$INTERNAL_AUTH_PASSWORD" ]; then
     export INTERNAL_AUTH_ENABLED=true
     export INTERNAL_AUTH_TEMPLATE="internal.conf"
-    # Only hash the password if it's not already a bcrypt hash
-    if [[ ! "$INTERNAL_AUTH_PASSWORD" =~ ^\$2[ayb]\$.* ]]; then
-        password_hash=$(caddy hash-password --plaintext "$INTERNAL_AUTH_PASSWORD")
-        export INTERNAL_AUTH_PASSWORD_HASH="$password_hash"
-    else
-        export INTERNAL_AUTH_PASSWORD_HASH="$INTERNAL_AUTH_PASSWORD"
-    fi
+    # Generate base64-encoded credentials for Authorization header
+    credentials=$(printf "%s:%s" "$INTERNAL_AUTH_USERNAME" "$INTERNAL_AUTH_PASSWORD" | base64)
+    export INTERNAL_AUTH_HEADER_VALUE="$credentials"
 fi
 
 # Handle external basic auth
 if [ -n "$EXTERNAL_AUTH_USERNAME" ] && [ -n "$EXTERNAL_AUTH_PASSWORD" ]; then
     export EXTERNAL_AUTH_ENABLED=true
     export EXTERNAL_AUTH_TEMPLATE="external.conf"
-    # Only hash the password if it's not already a bcrypt hash
-    if [[ ! "$EXTERNAL_AUTH_PASSWORD" =~ ^\$2[ayb]\$.* ]]; then
-        password_hash=$(caddy hash-password --plaintext "$EXTERNAL_AUTH_PASSWORD")
-        export EXTERNAL_AUTH_PASSWORD_HASH="$password_hash"
-    else
-        export EXTERNAL_AUTH_PASSWORD_HASH="$EXTERNAL_AUTH_PASSWORD"
-    fi
+    # Generate base64-encoded credentials for Authorization header
+    credentials=$(printf "%s:%s" "$EXTERNAL_AUTH_USERNAME" "$EXTERNAL_AUTH_PASSWORD" | base64)
+    export EXTERNAL_AUTH_HEADER_VALUE="$credentials"
 fi
 
 # Generate Caddyfile from template

@@ -10,8 +10,8 @@ import debug/${DEBUG_LEVEL}
         }
     }
     handle @exists {
-        import auth/${INTERNAL_AUTH_TEMPLATE}
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
+            import auth/${INTERNAL_AUTH_TEMPLATE}
             header_up Host "${INTERNAL_HEADER_UP_HOST}"
             header_up X-Real-IP {remote_host}
             import transport/${INTERNAL_BACKEND_SCHEME}
@@ -26,8 +26,8 @@ import debug/${DEBUG_LEVEL}
         }
     }
     handle @external_backend {
-        import auth/${EXTERNAL_AUTH_TEMPLATE}
         reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
+            import auth/${EXTERNAL_AUTH_TEMPLATE}
             header_up Host "${EXTERNAL_HEADER_UP_HOST}"
             import transport/${EXTERNAL_BACKEND_SCHEME}
         }
@@ -35,8 +35,8 @@ import debug/${DEBUG_LEVEL}
 
     # Default: if no match above, proxy to WordPress
     handle {
-        import auth/${INTERNAL_AUTH_TEMPLATE}
         reverse_proxy ${INTERNAL_BACKEND_SCHEME}://${INTERNAL_BACKEND_HOSTNAME}:${INTERNAL_BACKEND_PORT} {
+            import auth/${INTERNAL_AUTH_TEMPLATE}
             header_up Host "${INTERNAL_HEADER_UP_HOST}"
             header_up X-Real-IP {remote_host}
             import transport/${INTERNAL_BACKEND_SCHEME}
