@@ -1,4 +1,4 @@
-import debug/${DEBUG_LEVEL}
+import debug/${DEBUG_LEVEL}.conf
 
 :80 {
     root * ${WEB_ROOT}
@@ -14,7 +14,7 @@ import debug/${DEBUG_LEVEL}
             import auth/${INTERNAL_AUTH_TEMPLATE}
             header_up Host "${INTERNAL_HEADER_UP_HOST}"
             header_up X-Real-IP {remote_host}
-            import transport/${INTERNAL_BACKEND_SCHEME}
+            import transport/${INTERNAL_BACKEND_SCHEME}.conf
         }
     }
 
@@ -29,7 +29,7 @@ import debug/${DEBUG_LEVEL}
         reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
             import auth/${EXTERNAL_AUTH_TEMPLATE}
             header_up Host "${EXTERNAL_HEADER_UP_HOST}"
-            import transport/${EXTERNAL_BACKEND_SCHEME}
+            import transport/${EXTERNAL_BACKEND_SCHEME}.conf
         }
     }
 
@@ -39,7 +39,7 @@ import debug/${DEBUG_LEVEL}
             import auth/${INTERNAL_AUTH_TEMPLATE}
             header_up Host "${INTERNAL_HEADER_UP_HOST}"
             header_up X-Real-IP {remote_host}
-            import transport/${INTERNAL_BACKEND_SCHEME}
+            import transport/${INTERNAL_BACKEND_SCHEME}.conf
         }
     }
 
