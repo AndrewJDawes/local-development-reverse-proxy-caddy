@@ -25,6 +25,7 @@ RUN cd /srv && openssl req \
     -nodes \
     -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=blah.local"
 
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Make the entrypoint script executable

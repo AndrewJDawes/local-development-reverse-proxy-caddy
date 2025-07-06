@@ -2,11 +2,8 @@ import debug/${DEBUG_LEVEL}.conf
 
 github.com {
     tls internal
-    reverse_proxy github.com {
+    reverse_proxy https://github.com {
         header_up Host github.com
-        dynamic a github.com {
-            resolvers 1.1.1.1 8.8.8.8
-        }
     }
     header {
         X-Custom-Header "My custom value"
@@ -16,10 +13,7 @@ github.com {
 }
 www.github.com {
     tls internal
-    reverse_proxy www.github.com {
-        dynamic a www.github.com {
-            resolvers 1.1.1.1 8.8.8.8
-        }
+    reverse_proxy https://www.github.com {
         header_up Host www.github.com
     }
     header {
@@ -30,10 +24,7 @@ www.github.com {
 }
 api.github.com {
     tls internal
-    reverse_proxy api.github.com {
-        dynamic a api.github.com {
-            resolvers 1.1.1.1 8.8.8.8
-        }
+    reverse_proxy https://api.github.com {
         header_up Host api.github.com
     }
     header {
