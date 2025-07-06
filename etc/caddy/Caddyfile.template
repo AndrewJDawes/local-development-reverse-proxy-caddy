@@ -1,23 +1,52 @@
 import debug/${DEBUG_LEVEL}.conf
 
-:80 {
-
-    reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
-        import auth/${EXTERNAL_AUTH_TEMPLATE}
-        header_up Host "${EXTERNAL_HEADER_UP_HOST}"
-        import transport/${EXTERNAL_BACKEND_SCHEME}.conf
-        import cookie_header_up/${EXTERNAL_BACKEND_COOKIE_HEADER_UP_ENABLED}.conf
-        import cookie_header_down/${EXTERNAL_BACKEND_COOKIE_HEADER_DOWN_ENABLED}.conf
+github.com {
+    tls internal
+    reverse_proxy github.com {
+        header_up Host github.com
+        dynamic a github.com {
+            resolvers 1.1.1.1 8.8.8.8
+        }
     }
-
-    # Common security headers
     header {
-        X-Frame-Options "SAMEORIGIN"
-        X-XSS-Protection "1; mode=block"
-        X-Content-Type-Options "nosniff"
-        Referrer-Policy "strict-origin-when-cross-origin"
+        X-Custom-Header "My custom value"
     }
-
     # Enable compression
     encode gzip
 }
+www.github.com {
+    tls internal
+    reverse_proxy www.github.com {
+        dynamic a www.github.com {
+            resolvers 1.1.1.1 8.8.8.8
+        }
+        header_up Host www.github.com
+    }
+    header {
+        X-Custom-Header "My custom value"
+    }
+    # Enable compression
+    encode gzip
+}
+api.github.com {
+    tls internal
+    reverse_proxy api.github.com {
+        dynamic a api.github.com {
+            resolvers 1.1.1.1 8.8.8.8
+        }
+        header_up Host api.github.com
+    }
+    header {
+        X-Custom-Header "My custom value"
+    }
+    # Enable compression
+    encode gzip
+}
+
+    # Common security headers
+    # header {
+    #     X-Frame-Options "SAMEORIGIN"
+    #     X-XSS-Protection "1; mode=block"
+    #     X-Content-Type-Options "nosniff"
+    #     Referrer-Policy "strict-origin-when-cross-origin"
+    # }
