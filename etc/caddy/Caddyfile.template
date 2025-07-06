@@ -1,23 +1,15 @@
 import debug/${DEBUG_LEVEL}.conf
 
 :80 {
-
-    reverse_proxy ${EXTERNAL_BACKEND_SCHEME}://${EXTERNAL_BACKEND_HOSTNAME}:${EXTERNAL_BACKEND_PORT} {
-        import auth/${EXTERNAL_AUTH_TEMPLATE}
-        header_up Host "${EXTERNAL_HEADER_UP_HOST}"
-        import transport/${EXTERNAL_BACKEND_SCHEME}.conf
-        import cookie_header_up/${EXTERNAL_BACKEND_COOKIE_HEADER_UP_ENABLED}.conf
-        import cookie_header_down/${EXTERNAL_BACKEND_COOKIE_HEADER_DOWN_ENABLED}.conf
+    forward_proxy {
+        hide_ip
+        hide_via
     }
 
-    # Common security headers
-    header {
-        X-Frame-Options "SAMEORIGIN"
-        X-XSS-Protection "1; mode=block"
-        X-Content-Type-Options "nosniff"
-        Referrer-Policy "strict-origin-when-cross-origin"
+    route {
+        @github host github.com
+        header @github {
+            X-Github-Proxy true
+        }
     }
-
-    # Enable compression
-    encode gzip
 }

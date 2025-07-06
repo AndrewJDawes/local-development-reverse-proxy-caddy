@@ -1,8 +1,21 @@
 # Use the official Caddy image as base
-FROM caddy:2.7-alpine
+# Build stage
+FROM golang:1.24 AS builder
+
+# Install xcaddy
+RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+
+# Build Caddy with the forwardproxy plugin
+RUN xcaddy build --with github.com/caddyserver/forwardproxy
+
+# Final image
+FROM caddy:2.7.6-alpine
+
+COPY --from=builder /go/caddy /usr/bin/caddy
 
 # Expose port 80
 EXPOSE 80
+EXPOSE 2019
 
 # External backend defaults
 ENV EXTERNAL_BACKEND_SCHEME=https
