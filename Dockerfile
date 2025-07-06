@@ -4,22 +4,13 @@ FROM caddy:2.7-alpine
 # Expose port 80
 EXPOSE 80
 
-# Set environment variables with default values
-# Web root directory
-ENV WEB_ROOT=/www
-
-# Internal backend (e.g. WordPress) defaults
-ENV INTERNAL_BACKEND_SCHEME=http
-ENV INTERNAL_BACKEND_HOSTNAME=wordpress
-ENV INTERNAL_BACKEND_PORT=80
-ENV INTERNAL_HEADER_UP_HOST=wordpress
-
 # External backend defaults
 ENV EXTERNAL_BACKEND_SCHEME=https
 ENV EXTERNAL_BACKEND_HOSTNAME=api.example.com
 ENV EXTERNAL_BACKEND_PORT=443
 ENV EXTERNAL_HEADER_UP_HOST=api.example.com
-ENV EXTERNAL_BACKEND_PATTERN="^/github/.*"
+ENV EXTERNAL_BACKEND_COOKIE_HEADER_UP_ENABLED=false
+ENV EXTERNAL_BACKEND_COOKIE_HEADER_DOWN_ENABLED=false
 
 # Install envsubst
 RUN apk add --no-cache gettext bash
